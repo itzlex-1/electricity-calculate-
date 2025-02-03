@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Cost Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        select {
+            appearance: auto; /* Ensure dropdown displays correctly */
+            cursor: pointer;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #28a745;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Electricity Cost Calculator</h2>
+
+        <!-- Appliance Type -->
+        <label for="appliance">Appliance Type:</label>
+        <div>
+            <select id="appliance" onchange="logSelection()">
+                <option value="Refrigerator">Refrigerator</option>
+                <option value="Cellphone">Cellphone</option>
+                <option value="Television">Television</option>
+                <option value="Air Conditioner">Air Conditioner</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <!-- Appliance Power -->
+        <label for="power">Appliance Power (Watts):</label>
+        <input type="number" id="power" placeholder="Enter power in watts" min="1" required>
+
+        <!-- Usage Time (Hours and Minutes) -->
+        <label for="hours">Usage Time (Hours):</label>
+        <input type="number" id="hours" placeholder="Enter hours" min="0">
+
+        <label for="minutes">Usage Time (Minutes):</label>
+        <input type="number" id="minutes" placeholder="Enter minutes" min="0" max="59">
+
+        <!-- Calculate Button -->
+        <button onclick="calculateCost()">Calculate</button>
+
+        <!-- Result Display -->
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        function logSelection() {
+            const appliance = document.getElementById("appliance").value;
+            console.log("Selected Appliance:", appliance);
+        }
+
+        function calculateCost() {
+            const applianceSelect = document.getElementById("appliance");
+            const appliance = applianceSelect.value;
+            const power = parseFloat(document.getElementById("power").value);
+            let hours = parseFloat(document.getElementById("hours").value);
+            let minutes = parseFloat(document.getElementById("minutes").value);
+            const ratePerKwh = 11.51; // VECO Rate
+
+            console.log("Selected Appliance:", appliance); // Debugging line
+
+            // Ensure minutes is treated correctly if only minutes are provided
+            if (isNaN(hours)) hours = 0;
+            if (isNaN(minutes)) minutes = 0;
+
+            // Validate inputs
+            if (isNaN(power) || power <= 0 || hours < 0 || minutes < 0 || minutes >= 60) {
+                alert("Please enter valid values:\n- Power must be a positive number.\n- Hours and minutes must be valid (minutes < 60).");
+                return;
+            }
+
+            // Convert minutes to hours
+            const totalHours = hours + (minutes / 60);
+
+            // Ensure there's at least some time entered
+            if (totalHours === 0) {
+                alert("Please enter a valid usage time.");
+                return;
+            }
+
+            // Calculate energy consumed and total cost
+            const energyConsumed = (power / 1000) * totalHours;
+            const totalCost = energyConsumed * ratePerKwh;
+
+            // Display result
+            document.getElementById("result").innerText =
+                `Appliance: ${appliance}\n` +
+                `Energy Consumed: ${energyConsumed.toFixed(3)} kWh\n` +
+                `Estimated Cost: ₱${totalCost.toFixed(2)}`;
+        }
+    </script>
+
+</body></html>
+    
